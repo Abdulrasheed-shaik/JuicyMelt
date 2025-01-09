@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .h1{
+            text-align: center;
+        }
+        .cart-item { 
+            display: flex; 
+            justify-content: space-between;
+            width: 800px;
+            height: auto;
+            margin: 10px; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            border: 1px solid #ddd;; 
+            padding: 10px; 
+            border-radius: 5px; 
+            position: relative; /* Add this to position the label */
+        }
+        #cart-container{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* align-content: center; */
+        }
+        .empty-pic{
+            width: 100%;
+            height: 80vh;
+        }
+        .empty-para{
+            position: absolute;
+            top: 12%;
+            left: 12%;
+            font-size: 5rem;
+        }
+        .empty{
+            color: red;
+        }
+        .cart-item img { 
+            width: 200px; 
+            margin-right: 10px; 
+            border-radius: 5px; 
+        }
+        .cart-item div { 
+            flex-direction: column; 
+        }
+        .cart-names p{
+            font-size: 22px;
+        }
+        .quantity-control {  
+            margin-top: 5px; 
+        }
+        .quantity-control button { 
+            background-color: #39FF14; 
+            color: white; 
+            border: none; 
+            font-size: 20px;
+            font-weight: 900;
+            padding: 2px 15px; 
+            margin: 0 20px;
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        .quantity { 
+            font-weight: bold; 
+        }
+        .btn { 
+            margin-top: 5px; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        
+        .fa-xmark{
+            font-size: 30px;
+            color: red;
+        }
+        .total { 
+            font-size: 2rem; 
+            margin-top: 20px; 
+            font-weight: bold; 
+            text-align: center;
+        }
+        .total-btn {
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #39FF14;
+            border: 2px solid #39FF14;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+
+        }
+        .nav{
+            display: flex;
+            justify-content: space-around;
+            gap: 70%;
+            align-items: center;
+            width: 100%;
+            background-color: #39FF14;
+            color: white;
+        }
+        ul{
+            display: flex;
+            justify-content: space-around;
+            gap: 60px;
+        }
+        ul li{
+            list-style: none;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .available {
+            background-color: green;
+            padding: 10px;
+            width: fit-content;
+            color: white;
+        }
+        .out-of-stock {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <h1>JuicyMelt</h1>
+        <div>
+            <ul>
+                <li class="home">HOME</li>
+                <li class="shop">SHOP NOW</li>
+            </ul>
+        </div>
+    </div>
+    <h1 class="h1">Cart Items</h1>
+    <div id="cart-container"></div>
+    <p class="total" id="total-price"></p>
+    <button id="total-buy-now" class="btn total-btn">Buy All</button>
+    <script>
+        const h1=document.querySelector(".h1")
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        const cartContainer = document.getElementById('cart-container');
+        const totalPriceElement = document.getElementById('total-price');
+        const totalBuyNowButton = document.getElementById('total-buy-now');
+
+        function updateCart() {
+            cartContainer.innerHTML = '';
+            let total = 0;
+
+            if (!cartItems.length) {
+                cartContainer.innerHTML = `<p class="empty-para">Your cart is <span class="empty">empty!</span></p>
+                <img class="empty-pic" src='./assets/empty.png'/>`;
+                totalPriceElement.textContent = "";
+                h1.textContent=""
+                totalBuyNowButton.style.display = "none"; // Hide "Buy All" button if cart is empty
+                return;
+            }
+
+            totalBuyNowButton.style.display = "block"; // Show "Buy All" button
+
+            cartItems.forEach((item, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+
+                // Calculate item's total price
+                const itemPrice = 
+                    item.price?.perKg || 
+                    item.price?.perDozen || 
+                    item.price?.perLiter || 
+                    item.price?.per200g || 
+                    0;
+                const itemTotal = itemPrice * (item.quantity || 1);
+
+                if (item.available === 'true') {
+                    total += itemTotal;
+                }
+
+                cartItem.innerHTML = `
+                    <img src="${item.image || 'placeholder.jpg'}" alt="${item.name || 'Item'}" />
+                    <div class="cart-names">
+                        <h1>${item.name || 'Unnamed Item'}</h1>
+                        <p>Price per unit: Rs.${itemPrice}/-</p>
+                        <p>Total: Rs.${itemTotal}/-</p>
+                        <p class="${item.available === 'true' ? 'available' : 'out-of-stock'}">${item.available === 'true' ? 'Available' : 'Out of Stock'}</p>
+                        <div class="quantity-control">
+                            <button class="btn decrease-btn" data-index="${index}">-</button>
+                            <span class="quantity">${item.quantity || 1}</span>
+                            <button class="btn increase-btn" data-index="${index}">+</button>
+                        </div>
+                    </div>
+                    <i class="remove-btn btn fa-solid fa-xmark" data-index="${index}"></i>  
+                `;
+                cartContainer.appendChild(cartItem);
+            });
+
+            totalPriceElement.textContent = `Total: Rs.${total}/-`;
+        }
+
+        // Handle Quantity Change and Remove
+        cartContainer.addEventListener('click', (e) => {
+            const index = parseInt(e.target.getAttribute('data-index'), 10);
+
+            if (e.target.classList.contains('remove-btn')) {
+                cartItems.splice(index, 1); // Remove the item
+                localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Update localStorage
+                updateCart(); // Update DOM without reloading
+            }
+
+            if (e.target.classList.contains('increase-btn')) {
+                cartItems[index].quantity = (cartItems[index].quantity || 1) + 1;
+                localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Update localStorage
+                updateCart(); // Update DOM
+            }
+
+            if (e.target.classList.contains('decrease-btn')) {
+                if (cartItems[index].quantity > 1) {
+                    cartItems[index].quantity -= 1;
+                    localStorage.setItem('cartItems', JSON.stringify(cartItems)); // Update localStorage
+                    updateCart(); // Update DOM
+                }
+            }
+        });
+
+        // Handle Total Buy Now
+        totalBuyNowButton.addEventListener('click', () => {
+            if (!cartItems.length) return;
+
+            // Filter out out-of-stock items
+            const availableItems = cartItems.filter(item => item.available === 'true');
+
+            // Save available items to localStorage to share across pages
+            localStorage.setItem('purchasedItems', JSON.stringify(availableItems));
+
+            // Navigate to the new checkout page
+            location.href = './buynow.html';
+        });
+
+        updateCart();
+        //home
+        let home=document.querySelector(".home")
+        home.addEventListener("click",()=>{
+            location.href="./index.html"
+        })
+        //shopnow
+        let shop=document.querySelector(".shop")
+        shop.addEventListener("click",()=>{
+            location.href="./shop.html"
+        })
+    </script>
+</body>
+</html>

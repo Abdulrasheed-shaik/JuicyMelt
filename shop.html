@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Filter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    img {
+      width: 350px;
+      height: 350px;
+      aspect-ratio: 1/1;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
+      width: 100%;
+      height: 100vh;
+      justify-content: center;
+    }
+    .card{
+      width: 530px;
+    height: 400px;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    position: relative; /* Add this to position the label */
+    }
+    .data{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    }
+    .data h1{
+        font-size: 28px;
+        font-weight: 600;
+    }
+    .card .data p{
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .hover-content p{
+      font-size: 30px;
+      font-weight: 400;
+      text-align: center;
+    }
+    .hover-content button{
+      background-color: #39FF14;
+      border: 2px solid #39FF14;
+      color: white;
+      padding: 15px 20px;
+      font-size: 15px;
+      border-radius: 20px;
+      width: fit-content;
+      font-weight: bold;
+      margin: 10px auto;
+    }
+    .body {
+      display: flex;
+      gap: 1%;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 17%;
+      height: fit-content;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-left: 10px;
+    }
+    .buttonFilters{
+      margin-left: 25px;
+    }
+    .buttonFilters h2{
+      margin: 10px 0 30px;
+    }
+    .buttonFilters button, .category-buttons button, .type-container button {
+      padding: 10px 25px;
+      border-radius: 2rem;
+      width: fit-content; /* Match "Show All" button size */
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 20px;
+      flex: 1; /*Make buttons take equal space*/
+      margin-right: 20px; /* Add gap between buttons */
+    }
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      margin-left: 20px;
+      width: 100%;
+    }
+    .category-buttons.hidden {
+      display: none;
+    }
+    
+    .active {
+      background-color: #39FF14 !important;
+      border: 2px solid #39FF14 !important;
+      color: white !important;
+    }
+    .pagination {
+      /* position: fixed; */
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .pagination button {
+      width: 40px;
+      height: 40px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .pagination button.active {
+      background-color: #39FF14;
+      color: white;
+    }
+    .sort-select {
+      margin: 20px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: white;
+    }
+    .available {
+      background-color: green;
+    }
+    .out-of-stock {
+      background-color: red;
+    }
+    .nav{
+      display: flex;
+      justify-content: space-around;
+      gap: 70%;
+      align-items: center;
+      width: 100%;
+      height: 100px;
+      background-color: #39FF14;
+      color: white;
+      margin-bottom: 20px;
+    }
+    ul{
+      display: flex;
+      justify-content: space-around;
+      gap: 60px;
+    }
+    ul li{
+      list-style: none;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+    #cart-count {
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      position: relative;
+      top: -40px;
+      right: -15px;
+    }
+    .price-filter,.sort-select {
+      margin: 20px 0;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: 2px solid black;
+    }
+    .h1{
+      font-size: 30px;
+      font-weight: 700;
+      text-align: center;
+      width: 100%;
+      color: white;
+      background-color: #39FF14;
+    }
+    .type-container button, .category-buttons button {
+      padding: 10px 20px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 20px;
+      width: fit-content;
+      margin: 10px auto;
+    }
+    .filters{
+      padding: 10px 100px;
+    }
+    .type-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-left: 0; /* Adjust margin as needed */
+      width: 100%;
+    }
+    .category-buttons button {
+      flex: 1; /* Make buttons take equal space */
+    }
+  </style>  
+</head>
+<body>
+  <div class="nav">
+    <h1>JuicyMelt</h1>
+    <div>
+        <ul>
+          <li class="home">HOME</li>
+          <li class="cart text-4xl relative">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-count" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"></span>
+          </li>
+        </ul>
+    </div>
+</div>
+  <div class="body">
+    <div class="buttons">
+      <div class="h1">Filters</div>
+      <div class="filters"> 
+        <h2>Sort</h2>
+        <select class="sort-select">
+        <option value="priceLowToHigh">Price: Low to High</option>
+        <option value="priceHighToLow">Price: High to Low</option>
+        <option value="alphaAZ">Alphabetical: A-Z</option>
+        <option value="alphaZA">Alphabetical: Z-A</option>
+      </select>
+    </div>
+    <div class="filters">
+      <h2>Filter by Price</h2>
+      <select class="price-filter">
+        <option value="all">All</option>
+        <option value="0-100">0 to 100</option>
+        <option value="101-200">101 to 200</option>
+        <option value="201-300">201 to 300</option>
+        <option value="301-500">301 to 500</option>
+        <option value="501-1000">501 to 1000</option>
+        <option value="1001-1500">1001 to 1500</option>
+      </select>
+    </div>
+    </div>
+    <div>
+      <div class="buttonFilters">
+      <!-- Sorting Select -->
+      </div>
+      <div class="container"></div>
+      <div class="pagination"></div>
+    </div>
+  </div>
+  <script src="./data.js"></script>
+  <script>
+    const ITEMS_PER_PAGE = 6; // Number of products per page
+
+    // Display products with pagination
+    const displayProducts = (filteredProducts, page = 1) => {
+      const container = document.querySelector('.container');
+      container.innerHTML = ''; // Clear existing products
+
+      const start = (page - 1) * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE;
+      const paginatedProducts = filteredProducts.slice(start, end);
+      let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      let displayedProducts = {};
+
+      paginatedProducts.forEach((product) => {
+        if (displayedProducts[product.name]) {
+          displayedProducts[product.name].quantity += 1;
+        } else {
+          displayedProducts[product.name] = { ...product, quantity: 1 };
+        }
+      });
+
+      Object.values(displayedProducts).forEach((product) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const imgElement = document.createElement('div');
+        imgElement.className = 'imgs';
+        imgElement.innerHTML = `<img src='${product.image}'/>`;
+
+        const dataElement = document.createElement('div');
+        dataElement.className = 'data';
+        dataElement.innerHTML = `
+            <h1>${product.name}</h1>
+            <p>Rs.${product.price.perKg || product.price.perDozen || product.price.perLiter || product.price.per200g ||product.price.perPiece}/-</p>
+            <p>Size: ${Object.keys(product.price)}</p>`;
+
+        const hoverContent = document.createElement('div');
+        hoverContent.className = 'hover-content';
+        hoverContent.style.display = 'none'; // Initially hidden
+        hoverContent.style.width = '100%';
+        hoverContent.style.height = '100%';
+        hoverContent.style.backgroundImage = `url(${product.image})`;
+        hoverContent.style.backgroundSize = 'cover'; // Fully occupy the div
+        hoverContent.innerHTML = `
+            <p>${product.description}</p>
+            <button class="add p-3 w-32 rounded-lg text-white font-bold mx-auto my-6" ${product.available === "false" ? 'disabled' : ''}>Add to Cart</button>`;
+        
+        const label = document.createElement('div');
+        label.className = `label ${product.available === "true" ? 'available' : 'out-of-stock'}`;
+        label.textContent = product.available === "true" ? 'Available' : 'Out of Stock';
+
+        card.appendChild(label);
+        card.appendChild(imgElement);
+        card.appendChild(dataElement);
+        card.appendChild(hoverContent);
+        container.appendChild(card);
+        card.addEventListener('mouseover',()=>{
+            imgElement.style.display = 'none';
+            dataElement.style.display = 'none';
+            hoverContent.style.display = 'flex';
+            hoverContent.style.flexDirection = 'column';
+            hoverContent.style.justifyContent = 'center';
+        })
+        card.addEventListener('mouseout',()=>{
+        imgElement.style.display = 'block';
+        dataElement.style.display = 'flex';
+        hoverContent.style.display = 'none';
+        })
+        const addToCartButton = hoverContent.querySelector('.add');
+        const loginStatus = localStorage.getItem('loginStatus');
+        addToCartButton.addEventListener('click', () => {
+          if(loginStatus=="true"){
+            if (product.available === "false") return;
+            // Check if the item already exists in the cart
+            const existingItem = cartItems.find(cartItem => cartItem.name === product.name);
+            if (existingItem) {
+                // Increase the quantity if the item exists
+                existingItem.quantity = (existingItem.quantity || 1) + 1;
+            } 
+            else {
+                // Add the new item with a quantity property
+                const newItem = { ...product, quantity: 1 };
+                cartItems.push(newItem);
+            }
+            // Update localStorage
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            // Notify the user
+            alert(`${product.name} added to cart! Quantity: ${existingItem ? existingItem.quantity : 1}`);
+          }
+          else{
+            alert("Please login to add items to cart")
+          }
+        });
+
+      });
+      
+
+      // Render pagination buttons
+      renderPagination(filteredProducts, page);
+    };
+
+    // Render pagination
+    const renderPagination = (products, currentPage) => {
+      const paginationContainer = document.querySelector('.pagination');
+      paginationContainer.innerHTML = ''; // Clear existing buttons
+
+      const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        if (i === currentPage) pageButton.classList.add('active');
+
+        pageButton.addEventListener('click', () => {
+          displayProducts(products, i);
+        });
+
+        paginationContainer.appendChild(pageButton);
+      }
+    };
+
+    // Sorting Functionality
+    const sortProducts = (filteredProducts, sortType) => {
+      switch (sortType) {
+        case 'priceLowToHigh':
+          return filteredProducts.sort((a, b) => {
+            const priceA = a.price.perKg || a.price.perDozen || a.price.perLiter || a.price.per200g || a.price.perPiece;
+            const priceB = b.price.perKg || b.price.perDozen || b.price.perLiter || a.price.per200g || a.price.perPiece;
+            return priceA - priceB;
+          });
+        case 'priceHighToLow':
+          return filteredProducts.sort((a, b) => {
+            const priceA = a.price.perKg || a.price.perDozen || a.price.perLiter || a.price.per200g || a.price.perPiece;
+            const priceB = b.price.perKg || b.price.perDozen || b.price.perLiter || a.price.per200g || a.price.perPiece;
+            return priceB - priceA;
+          });
+        case 'alphaAZ':
+          return filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+        case 'alphaZA':
+          return filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+        default:
+          return filteredProducts;
+      }
+    };
+
+    // Event listener for sort select dropdown
+    const sortSelect = document.querySelector('.sort-select');
+    sortSelect.addEventListener('change', (event) => {
+      const sortType = event.target.value;
+      const filteredProducts = products; // Replace with the filtered products list if needed
+      const sortedProducts = sortProducts(filteredProducts, sortType);
+      displayProducts(sortedProducts); // Redisplay the sorted products
+    });
+
+    // Filter products by price range
+    const filterByPrice = (products, range) => {
+      if (range === 'all') return products;
+
+      const [min, max] = range.split('-').map(Number);
+      return products.filter(product => {
+        const price = product.price.perKg || product.price.perDozen || product.price.perLiter || product.price.per200g ||product.price.perPiece;
+        return price >= min && price <= max;
+      });
+    };
+
+    // Event listener for price filter dropdown
+    const priceFilter = document.querySelector('.price-filter');
+    priceFilter.addEventListener('change', (event) => {
+      const range = event.target.value;
+      const filteredProducts = filterByPrice(products, range);
+      displayProducts(filteredProducts); // Redisplay the filtered products
+    });
+
+    // Create and display buttons for types and categories
+    const buttonContainer = document.querySelector('.buttonFilters');
+    const types = [...new Set(products.map((product) => product.type))];
+
+    // Create a "Show All" button
+    const showAllButton = document.createElement('button');
+    showAllButton.textContent = 'Show All';
+    showAllButton.addEventListener('click', () => {
+      displayProducts(products);
+      setActiveButton(showAllButton);
+    });
+    buttonContainer.appendChild(showAllButton);
+
+    // Generate type buttons and their respective category buttons
+    types.forEach((type) => {
+      const typeButton = document.createElement('button');
+      typeButton.textContent = type;
+
+      typeButton.addEventListener('click', () => {
+        const filteredProducts = products.filter((product) => product.type === type);
+        displayProducts(filteredProducts);
+        setActiveButton(typeButton);
+      });
+      buttonContainer.appendChild(typeButton);
+
+      const filteredProducts = products.filter((product) => product.type === type);
+      const categories = [...new Set(filteredProducts.map((product) => product.category))];
+
+      categories.forEach((category) => {
+        const categoryButton = document.createElement('button');
+        categoryButton.textContent = category;
+        categoryButton.addEventListener('click', () => {
+          displayProducts(products.filter((product) => product.type === type && product.category === category));
+          setActiveButton(categoryButton);
+        });
+        buttonContainer.appendChild(categoryButton);
+      });
+    });
+
+    // Highlight the active button
+    const setActiveButton = (button) => {
+      document.querySelectorAll('.buttonFilters button').forEach((btn) => btn.classList.remove('active'));
+      button.classList.add('active');
+    };
+
+    // Initially display all products
+    displayProducts(products);
+    setActiveButton(showAllButton);
+
+    //home
+    let home=document.querySelector(".home")
+    home.addEventListener("click",()=>{
+        location.href="./index.html"
+    })
+    //cart
+    const loginStatus = localStorage.getItem('loginStatus');
+    let cart=document.querySelector(".cart")
+    cart.addEventListener("click",()=>{
+        if(loginStatus=="true"){
+        location.href="./cart.html"
+        }
+        else{
+            alert("Please login to view cart")
+        }
+    })
+    // Update cart count in the header
+    const cartCountElement = document.getElementById('cart-count');
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartCountElement.textContent = cartItems.length;
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        pre {
+            text-align: left;
+            margin: 20px auto;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 50%;
+            background-color: #f9f9f9;
+            overflow-wrap: break-word;
+        }
+        pre span.highlight {
+            color: #007BFF;
+            font-weight: bold;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+        button:focus {
+            outline: 2px solid #0056b3;
+            outline-offset: 4px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        #delivery-date-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        @media (max-width: 600px) {
+            pre {
+                font-size: 16px;
+                padding: 15px;
+            }
+            button {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Payment Receipt</h1>
+    <pre id="receipt-content"></pre>
+    <div class="button-container">
+        <button id="download-pdf" aria-label="Download the receipt as a PDF">Download PDF</button>
+        <button id="view-delivery-date" aria-label="View the estimated delivery date">View Delivery Date</button>
+        <button onclick="goHome()" aria-label="Return to the homepage">Go to Home</button>
+    </div>
+    <div id="delivery-date-container">
+        <h2>Estimated Delivery Date</h2>
+        <p id="delivery-date" aria-live="polite"></p>
+    </div>
+    <script>
+        // Fetch receipt details from localStorage
+        const receiptDetails = localStorage.getItem('receiptDetails');
+        const receiptContent = document.getElementById('receipt-content');
+        const viewDeliveryDateButton = document.getElementById('view-delivery-date');
+        
+        // Display receipt details with placeholders for missing data
+        if (receiptDetails && receiptDetails.trim() !== '') {
+            receiptContent.innerHTML = receiptDetails.replace(/(Amount Paid|Transaction ID):/g, '<span class="highlight">$1</span>');
+            viewDeliveryDateButton.style.display = 'inline-block'; // Show button if details exist
+        } else {
+            receiptContent.innerHTML = 'No receipt details available. Please try again later.';
+            viewDeliveryDateButton.style.display = 'none'; // Hide button if no details
+        }
+        
+        // Utility to calculate estimated delivery date
+        function calculateDeliveryDate(minDays = 3, maxDays = 7) {
+            const today = new Date();
+            const randomDays = Math.floor(Math.random() * (maxDays - minDays + 1)) + minDays;
+            today.setDate(today.getDate() + randomDays);
+            return today.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        // Function to generate and download PDF
+        document.getElementById('download-pdf').addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+        
+            const lines = receiptDetails ? receiptDetails.split('\n') : ['No receipt details available.'];
+            let yPosition = 10;
+        
+            lines.forEach(line => {
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const splitLines = doc.splitTextToSize(line, pageWidth - 20);
+                splitLines.forEach(splitLine => {
+                    doc.text(splitLine, 10, yPosition);
+                    yPosition += 10;
+                });
+            });
+        
+            doc.save('payment_receipt.pdf');
+        });
+        
+        // Display the estimated delivery date
+        document.getElementById('view-delivery-date').addEventListener('click', () => {
+            const deliveryDateContainer = document.getElementById('delivery-date-container');
+            const deliveryDateElement = document.getElementById('delivery-date');
+        
+            const estimatedDate = calculateDeliveryDate();
+            deliveryDateElement.textContent = `Your order will arrive by ${estimatedDate}`;
+            deliveryDateContainer.style.display = 'block';
+        });
+        
+        // Go to home function
+        function goHome() {
+            if (confirm('Are you sure you want to clear receipt details and go to the home page?')) {
+                localStorage.removeItem('receiptDetails');
+                location.href = './index.html';
+            }
+        }
+        </script>
+        
+</body>
+</html>

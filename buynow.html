@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout with Coupons</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px auto;
+            width: 90%;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: white;
+            border-radius: 5px;
+        }
+        .cart-item img {
+            width: 100px;
+            border-radius: 5px;
+        }
+        .cart-names p {
+            margin: 5px 0;
+        }
+        .summary {
+            margin: 20px auto;
+            width: 90%;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .summary p {
+            margin: 5px 0;
+            font-size: 1.2rem;
+        }
+        .total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: right;
+        }
+        #make-payment, #apply-coupon, #get-coupon {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 10px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 20%;
+            text-align: center;
+        }
+        #coupon-code {
+            margin: 20px auto;
+            padding: 10px;
+            width: 30%;
+            display: block;
+            font-size: 1.2rem;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+        }
+        #generated-coupon {
+            margin: 20px 45%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: green;
+            display: none;
+            width: 300px;
+        }
+        .nav{
+            display: flex;
+            justify-content: space-around;
+            gap: 70%;
+            align-items: center;
+            width: 100%;
+            background-color: #39FF14;
+            color: white;
+        }
+        ul{
+            display: flex;
+            justify-content: space-around;
+            gap: 60px;
+        }
+        ul li{
+            list-style: none;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <h1>JuicyMelt</h1>
+        <div>
+            <ul>
+                <li class="home">HOME</li>
+                <li class="shop">SHOP NOW</li>
+            </ul>
+        </div>
+    </div>
+    <h1 style="text-align:center;">Checkout Summary</h1>
+    <div id="cart-container"></div>
+    <div class="summary">
+        <p id="subtotal"></p>
+        <p id="tax"></p>
+        <p id="delivery"></p>
+        <p id="coupon-discount"></p>
+        <p class="total" id="total"></p>
+    </div>
+    
+    <button id="get-coupon">Get Coupon</button>
+    <div id="generated-coupon"></div>
+    <div class="btn">
+        <input type="text" id="coupon-code" placeholder="Enter coupon code" style="display:none;">
+        <button id="apply-coupon" style="display:none;">Apply Coupon</button>
+        <button id="make-payment">Pay Rs.0</button>
+    </div>
+
+    <script>
+        const purchasedItems = JSON.parse(localStorage.getItem('purchasedItems')) || [];
+        const cartContainer = document.getElementById('cart-container');
+        const makePaymentButton = document.getElementById('make-payment');
+        const applyCouponButton = document.getElementById('apply-coupon');
+        const couponCodeInput = document.getElementById('coupon-code');
+        const couponDiscountElement = document.getElementById('coupon-discount');
+        const getCouponButton = document.getElementById('get-coupon');
+        const generatedCouponElement = document.getElementById('generated-coupon');
+
+        let subtotal = 0;
+        purchasedItems.forEach(item => {
+            const itemPrice = 
+                item.price?.perKg || 
+                item.price?.perDozen || 
+                item.price?.perLiter || 
+                item.price?.per200g || 
+                0;
+            subtotal += itemPrice * (item.quantity || 1);
+        });
+
+        const tax = subtotal * 0.1; // 10% Tax
+        const delivery = 50; // Fixed delivery fee
+        let couponDiscount = 0;
+        let total = subtotal + tax + delivery - couponDiscount;
+
+        purchasedItems.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item';
+
+            const itemPrice = 
+                item.price?.perKg || 
+                item.price?.perDozen || 
+                item.price?.perLiter || 
+                item.price?.per200g || 
+                0;
+            const itemTotal = itemPrice * (item.quantity || 1);
+
+            cartItem.innerHTML = `
+                <img src="${item.image || 'placeholder.jpg'}" alt="${item.name || 'Item'}" />
+                <div class="cart-names">
+                    <h2>${item.name || 'Unnamed Item'}</h2>
+                    <p>Price per unit: Rs.${itemPrice}/-</p>
+                    <p>Quantity: ${item.quantity || 1}</p>
+                    <p>Total: Rs.${itemTotal}/-</p>
+                </div>
+            `;
+            cartContainer.appendChild(cartItem);
+        });
+
+        const subtotalElement = document.getElementById('subtotal');
+        const taxElement = document.getElementById('tax');
+        const deliveryElement = document.getElementById('delivery');
+        const totalElement = document.getElementById('total');
+
+        subtotalElement.textContent = `Subtotal: Rs.${subtotal.toFixed(2)}`;
+        taxElement.textContent = `Tax (10%): Rs.${tax.toFixed(2)}`;
+        deliveryElement.textContent = `Delivery Fee: Rs.${delivery.toFixed(2)}`;
+        couponDiscountElement.textContent = `Coupon Discount: Rs.${couponDiscount.toFixed(2)}`;
+        totalElement.textContent = `Total: Rs.${total.toFixed(2)}`;
+
+        makePaymentButton.textContent = `Pay Rs.${total.toFixed(2)}`;
+
+        const updateTotal = () => {
+            total = subtotal + tax + delivery - couponDiscount;
+            couponDiscountElement.textContent = `Coupon Discount: Rs.${couponDiscount.toFixed(2)}`;
+            totalElement.textContent = `Total: Rs.${total.toFixed(2)}`;
+            makePaymentButton.textContent = `Pay Rs.${total.toFixed(2)}`;
+        };
+
+        const coupons = {
+            "SAVE50": 50, // Rs. 50 discount
+            "FLAT100": 100, // Rs. 100 discount
+            "JUICY10": subtotal * 0.1, // 10% off
+        };
+
+        let couponApplied = false;
+        let generatedCoupon = '';
+
+        getCouponButton.addEventListener('click', () => {
+            getCouponButton.disabled = true;
+            const couponCodes = Object.keys(coupons);
+            generatedCoupon = couponCodes[Math.floor(Math.random() * couponCodes.length)];
+            generatedCouponElement.style.display = 'block';
+            generatedCouponElement.textContent = `Your Coupon Code: ${generatedCoupon}`;
+            couponCodeInput.style.display = 'block';
+            applyCouponButton.style.display = 'block';
+        });
+
+        applyCouponButton.addEventListener('click', () => {
+            const enteredCouponCode = couponCodeInput.value.trim().toUpperCase();
+            if (coupons[enteredCouponCode] && !couponApplied) {
+                couponDiscount = coupons[enteredCouponCode];
+                couponApplied = true;
+                updateTotal();
+                generatedCouponElement.style.display = 'none';
+                couponCodeInput.style.display = 'none';
+                applyCouponButton.style.display = 'none';
+                alert(`Coupon Applied: Rs.${couponDiscount.toFixed(2)} off!`);
+            } else {
+                alert('Invalid or already applied coupon!');
+            }
+        });
+
+        makePaymentButton.addEventListener('click', () => {
+            const options = {
+                key: "rzp_test_C8SYTW0vznQInP", // Replace with your Razorpay key
+                amount: total * 100, // Convert to paise
+                currency: "INR",
+                name: "JuicyMelt",
+                description: "Thank you for your purchase!",
+                handler: function (response) {
+                    const paymentId = response.razorpay_payment_id;
+                    const username = "customer@example.com"; // Replace with dynamic username if available
+
+                    const receiptContent = `
+                        Payment Receipt:
+                        ----------------------
+                        Username: ${username}
+                        Payment ID: ${paymentId}
+                        Amount Paid: Rs.${total.toFixed(2)}
+                        ----------------------
+                        Thank you for shopping with JuicyMelt!
+                    `;
+
+                    // Save receipt details in localStorage
+                    localStorage.setItem('receiptDetails', receiptContent);
+
+                    // Redirect to receipt page
+                    location.href = "./reciept.html";
+                },
+                prefill: {
+                    name: "Customer Name",
+                    email: "customer@example.com",
+                    contact: "9999999999"
+                }
+            };
+
+            const razorpay = new Razorpay(options);
+            razorpay.open();
+        });
+        //home
+        let home=document.querySelector(".home")
+        home.addEventListener("click",()=>{
+            location.href="./index.html"
+        })
+        //shopnow
+        let shop=document.querySelector(".shop")
+        shop.addEventListener("click",()=>{
+            location.href="./shop.html"
+        })
+    </script>
+</body>
+</html>

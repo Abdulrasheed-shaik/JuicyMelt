@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register and Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .container {
+      background-color: white;
+      padding: 50px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+    .container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container form{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container form input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .container form button {
+      padding: 10px;
+      background-color: #39FF14;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px 40%;
+    }
+    .container form button:hover {
+      background-color: #32CD12;
+    }
+    .toggle-link {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #39FF14;
+    }
+    .google-signin {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .lines{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      gap: 20px;
+    }
+    .lines p{
+      font-weight: bold;
+      font-size: 24px;
+    }
+    .line{
+      display: inline-block;
+      width: 150px;
+      height: 3px;
+      background-color: black;
+    }
+    #login-form {
+  display: none;
+}
+
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1 id="form-title">Register</h1>
+    <form id="register-form">
+      <input type="text" id="register-username" placeholder="Username">
+      <input type="email" id="register-email" placeholder="Email">
+      <input type="password" id="register-password" placeholder="Password">
+      <button type="submit">Register</button>
+    </form>
+    <form id="login-form" style="display: none;">
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Password">
+      <button type="submit">Login</button>
+    </form>
+    <div class="toggle-link" id="toggle-link">Already have an account? Login</div>
+    <div class="lines">
+      <div class="line"></div><p>or</p> <div class="line"></div>
+    </div>
+    <div class="google-signin">
+      <div id="g_id_onload"
+           data-client_id="143891563147-6t1nfcjr2lo62uihcqju1tmrfkku3sdo.apps.googleusercontent.com"
+           data-login_uri="http://localhost:3000"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="rectangular"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-size="large"
+           data-logo_alignment="left">
+      </div>
+    </div>
+  </div>
+
+  <script>
+//register.login,signup with google
+const registerForm = document.getElementById('register-form');
+const loginForm = document.getElementById('login-form');
+const formTitle = document.getElementById('form-title');
+const toggleLink = document.getElementById('toggle-link');
+
+if (registerForm && loginForm && formTitle && toggleLink) {
+  toggleLink.addEventListener('click', () => {
+    if (registerForm.style.display === 'none') {
+      registerForm.style.display = 'block';
+      loginForm.style.display = 'none';
+      formTitle.textContent = 'Register';
+      toggleLink.textContent = 'Already have an account? Login';
+    } else {
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      formTitle.textContent = 'Login';
+      toggleLink.textContent = 'Don\'t have an account? Register';
+    }
+  });
+
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('register-username').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+
+    const userData = { username, email, password };
+    localStorage.setItem('userData', JSON.stringify(userData));
+    alert('Registration successful!');
+    
+    registerForm.reset();
+    toggleLink.click(); // Switch to login form
+    
+  });
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
+
+    if (storedUserData && storedUserData.email === email && storedUserData.password === password) {
+      localStorage.setItem('loginStatus', 'true');
+      alert(`Logged in with Email: ${email}`);
+      location.href = './index.html';
+    } else {
+      alert('Invalid email or password');
+    }
+  });
+}
+// Callback function to handle response
+function handleCredentialResponse(response) {
+  console.log('Encoded JWT ID token: ' + response.credential);
+
+  // Decode JWT (optional, for client-side use)
+  const payload = JSON.parse(atob(response.credential.split('.')[1]));
+  console.log(payload);
+
+  // Example: Display user info
+  alert(`Logged in as: ${payload.name}`);
+  const userData = { username: payload.name, email: payload.email, profilePic: payload.picture };
+  localStorage.setItem('userData', JSON.stringify(userData));
+  localStorage.setItem('loginStatus', 'true');
+  location.href="./index.html";
+}
+
+// Optionally, you can handle sign-out logic
+function signOut() {
+  localStorage.setItem('loginStatus', 'false');
+  alert('User signed out!');
+  location.href = './index.html';
+}
+  </script>
+</body>
+</html>

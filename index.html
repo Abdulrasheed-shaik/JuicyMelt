@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <section id="header">
+        <header class="header ">
+            <div class="logo text-4xl font-bold">JuicyMelt</div>
+            
+            <div class="nav flex justify-between gap-10">
+                <div class="search">
+                    <input type="search" name="" id="searchInput" placeholder="Search for products...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="menu">
+                    <ul class="flex justify-between gap-6 text-2xl font-bold">
+                        <li class="home">HOME</li>
+                        <li class="product">PRODUCT</li>
+                        <li class="menu-about">ABOUT</li>
+                        <li class="menu-services">SERVICES</li>
+                        <li class="cart text-4xl relative">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span id="cart-count"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="welcome-message" class="text-4xl font-bold"></div>
+                <div class="signup font-bold text-xl" id="auth-container">
+                    <button class="signup-btn">SIGN UP</button>
+                </div>
+                <button class="guest-signup-btn ">GUEST SIGNUP</button>
+                <div class="profile font-bold text-xl" id="profile-container" style="display: none;">
+                    <button onclick="signOut()" class="signout">Sign Out</button>
+                </div>
+            </div>
+            
+            <i class="fa-solid fa-bars"></i>
+            <div class="nav-slide">
+        
+                <div class="nav-menu">
+                    <ul class="flex flex-col text-2xl font-bold gap-4">
+                        <li><i class="fa-solid fa-x"></i></li>
+                        <li class="nav-home">HOME</li>
+                        <li class="nav-product">PRODUCT</li>
+                        <li class="nav-about">ABOUT</li>
+                        <li class="nav-services">SERVICES</li>
+                        <li class="nav-cart text-4xl relative">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span id="nav-cart-count"></span> <!-- Ensure cart count is displayed -->
+                        </li>
+                    </ul>
+                    <div class="nav-profile font-bold text-xl" id="nav-profile-container" >
+                        <button class="nav-signout">Sign Out</button>
+                    </div>
+                </div>
+                <div id="welcome-message" class="text-4xl font-bold"></div>
+                <div class="signup font-bold text-xl" id="nav-auth-container">
+                    <button class="nav-signup-btn">SIGN UP</button>
+                </div>
+                <button class="nav-guest-signup-btn">GUEST SIGNUP</button>
+                
+            </div>
+        </header>
+    </section>
+    <section class="searchResultsdiv">
+        <div id="searchResults">
+        </div>
+    </section>
+    <section class="home">
+        <div class="slide-container">
+            <div class="slider">
+                <img src="./assets/mainimage.jpg" alt="" class="active">
+                <img src="./assets/different-fruits-splash-background.jpg" alt="">
+            </div>
+            <div class="buttons">
+                <span class="next">&#10095</span>
+                <span class="prev">&#10094</span>
+            </div>
+        </div>
+    </section>
+    <section id="available">
+                <h1 class="available-text">Available Now</h1>
+                <div class="container">
+                    <div class="filter-buttons"></div>
+                    <div class="available-container">
+                        <div class="available"></div>
+                        <div class="pagination available-pagination text-center mt-5"></div>
+                    </div>
+                </div>
+    </section>
+    <section id="about">
+        <h1 class="about-text text-4xl text-center font-bold">About</h1>
+        <div class="about">
+            <div class="about-div">
+                <h1 class="text-center text-4xl mb-5">Where we collect?</h1>
+                <p class="text-justify text-xl">We source our fruits from the finest farms, ensuring they are handpicked at the peak of ripeness. Every fruit is carefully selected to bring you the best flavors and nutrition. Whether it’s tropical delights, citrus wonders, or exotic berries, we work with trusted growers who share our passion for quality.</p>
+            </div>
+            <div class=" about-div">
+                <h1 class="text-center text-4xl mb-5">Farms</h1>
+                <p class="text-justify text-xl">Our partner farms are known for sustainable and eco-friendly practices. They use natural methods to grow fruits, ensuring they are free from harmful chemicals. From lush orchards to sprawling plantations, our fruits come from the most fertile lands, guaranteeing freshness in every bite.</p>
+            </div>
+            <div class=" about-div ">
+                <h1 class="text-center text-4xl mb-5">About our company</h1>
+                <p class="text-justify text-xl">At JuicyMelt, we are passionate about delivering the goodness of nature straight to your doorstep. Specializing in fresh fruits, natural juices, and creamy fruit ice creams, our mission is to bring you healthy, delicious, and premium-quality products. Our journey begins with the best farms and ends with your satisfaction, making every experience refreshingly delightful.</p>
+            </div>
+        </div>
+    </section>
+    <section id="services" class="flex flex-col gap-12 m-10">
+        <h1 class="services-text text-4xl text-center font-bold m-10">Services</h1>
+        <div class="services ">
+            <div class="box flex flex-col justify-center items-center gap-2">
+                <div class="w-44 h-44 rounded-full border-solid border-8 border-zinc-200 text-6xl flex justify-center items-center text-zinc-400"><i class="fa-duotone fa-solid fa-truck-fast"></i></div>
+                <h1 class="sev-text text-xl font-bold">FREE 24 HOURS DELIVERY</h1>
+                <p class="sev-text text-lg font-medium text-zinc-400">Andhra Pradesh|Telangana</p>
+            </div>
+            <div class="box flex flex-col justify-center items-center gap-2">
+                <div class="w-44 h-44 rounded-full border-solid border-8 border-zinc-200 text-6xl flex justify-center items-center text-zinc-400"><i class="fa-brands fa-whatsapp"></i></div>
+                <h1 class="sev-text text-xl font-bold">24X7 SUPPORT ASSISTANCE</h1>
+                <p class="sev-text text-lg font-medium text-zinc-400">Call|Whatsapp|Messenger</p>
+            </div>
+            <div class="box flex flex-col justify-center items-center gap-4">
+                <div class="w-44 h-44 rounded-full border-solid border-8 border-zinc-200 text-6xl flex justify-center items-center text-zinc-400"><i class="fa-solid fa-ticket"></i></div>
+                <h1 class="sev-text text-xl font-bold">FREE GIFT VOUCHER</h1>
+                <p class="sev-text text-lg font-medium text-zinc-400">Valid on next purchase</p>
+            </div>
+            <div class="box flex flex-col justify-center items-center gap-4">
+                <div class="w-44 h-44 rounded-full border-solid border-8 border-zinc-200 text-6xl flex justify-center items-center text-zinc-400"><i class="fa-solid fa-retweet"></i></div>
+                <h1 class="sev-text text-xl font-bold">Guaranteed Exchange</h1>
+                <p class="sev-text text-lg font-medium text-zinc-400">Exchange within 24 hours</p>
+            </div>
+        </div>
+    </section>
+    <section id="reviews" class="mt-20">
+        <h1 class="review-text text-4xl text-center font-bold mb-10">Customer Reviews</h1>
+        <div class="reviews-container flex flex-wrap gap-10 justify-center align-center"></div>
+    </section>
+    <section id="footer" class=" p-12 mt-20">
+        <div class=" footer">
+            <div class="flex flex-col gap-10 w-60">
+                <h1 class="footer-text">Policy</h1>
+                <div class="flex flex-col gap-2 text-xl">
+                <a href="#">TERMS OF SERVICES</a>
+                <a href="#">RETURN POLICY</a>
+                <a href="#">DISCLAIMER</a>
+                </div>
+            </div>
+            <div class="flex flex-col gap-10 w-60">
+                <h1 class="footer-text">Help</h1>
+                <div class="flex flex-col gap-2 text-xl">
+                    <a href="#">CUSTOMER SUPPORT</a>
+                    <a href="#">FEEDBACK</a>
+                    <a href="#">FARM MAP</a>
+                </div>
+            </div>
+            <div class="flex flex-col w-80 gap-10 text-justify">
+                <h1 class="footer-text">Newsletter Sign Up</h1>
+                <p>Welcome to JuicyMelt, your go-to destination for farm-fresh fruits, cold-pressed juices, and handcrafted fruit ice creams, all made with nature’s purest flavors and free from artificial additives. Committed to healthy living and sustainability, we bring you the best of nature in every bite and sip—shop online today!</p>
+                <form action="" class="flex gap-2 text-xl">
+                    <input type="email" name="" id="" placeholder="Enter your email" class="border-2 border-solid border-indigo-600 p-2">
+                    <button type="button" class="submit p-3 text-lg text-white rounded-lg px-6 py-3">submit</button>
+                </form>
+            </div>
+            <div class="flex flex-col gap-10 w-80">
+                <h1 class="footer-text">Social media</h1>
+                <div class="flex gap-10 text-5xl">
+                    <i class="fa-brands fa-square-facebook"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                    <i class="fa-brands fa-square-x-twitter"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="./data.js"></script>
+    <script src="./script.js"></script>
+    <script>
+       
+    </script>
+</body>
+</html>
