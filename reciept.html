@@ -24,6 +24,8 @@
             max-width: 50%;
             background-color: #f9f9f9;
             overflow-wrap: break-word;
+            word-wrap: break-word; /* Ensure text fits within the box */
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
         }
         pre span.highlight {
             color: #007BFF;
@@ -52,7 +54,7 @@
         .button-container {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
+            /* flex-wrap: wrap; */
             gap: 20px;
         }
         #delivery-date-container {
@@ -64,14 +66,24 @@
             text-align: center;
             display: none;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 480px) {
             pre {
                 font-size: 16px;
                 padding: 15px;
+                text-align: left !important; /* Align text to the start in media queries */
+                margin: 20px auto;
+                padding: 20px;
+                font-size: 24px;
+                font-weight: 600;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                max-width: 100%;
+                background-color: #f9f9f9;
+                overflow-wrap: break-word;
             }
             button {
-                font-size: 16px;
-                padding: 8px 16px;
+                font-size: 10px;
+                padding: 8px 10px;
             }
         }
     </style>

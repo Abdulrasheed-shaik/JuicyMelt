@@ -77,9 +77,16 @@
       background-color: black;
     }
     #login-form {
-  display: none;
-}
-
+      display: none;
+    }
+    @media screen and (max-width: 480px){
+      .container {
+        width: 200px;
+      }
+      .container form button {
+        margin: 10px 30%;
+      }
+    }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>

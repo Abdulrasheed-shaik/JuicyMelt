@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JuicyMelt</title>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
 </head>
 <body>
     <section id="header">
@@ -85,7 +90,7 @@
         </div>
     </section>
     <section id="available">
-                <h1 class="available-text">Available Now</h1>
+                <h1 class="available-text ">Available Now</h1>
                 <div class="container">
                     <div class="filter-buttons"></div>
                     <div class="available-container">
@@ -97,15 +102,15 @@
     <section id="about">
         <h1 class="about-text text-4xl text-center font-bold">About</h1>
         <div class="about">
-            <div class="about-div">
+            <div class="about-div" data-aos="flip-left">
                 <h1 class="text-center text-4xl mb-5">Where we collect?</h1>
                 <p class="text-justify text-xl">We source our fruits from the finest farms, ensuring they are handpicked at the peak of ripeness. Every fruit is carefully selected to bring you the best flavors and nutrition. Whether it’s tropical delights, citrus wonders, or exotic berries, we work with trusted growers who share our passion for quality.</p>
             </div>
-            <div class=" about-div">
+            <div class=" about-div" data-aos="flip-left">
                 <h1 class="text-center text-4xl mb-5">Farms</h1>
                 <p class="text-justify text-xl">Our partner farms are known for sustainable and eco-friendly practices. They use natural methods to grow fruits, ensuring they are free from harmful chemicals. From lush orchards to sprawling plantations, our fruits come from the most fertile lands, guaranteeing freshness in every bite.</p>
             </div>
-            <div class=" about-div ">
+            <div class=" about-div " data-aos="flip-left">
                 <h1 class="text-center text-4xl mb-5">About our company</h1>
                 <p class="text-justify text-xl">At JuicyMelt, we are passionate about delivering the goodness of nature straight to your doorstep. Specializing in fresh fruits, natural juices, and creamy fruit ice creams, our mission is to bring you healthy, delicious, and premium-quality products. Our journey begins with the best farms and ends with your satisfaction, making every experience refreshingly delightful.</p>
             </div>
@@ -178,8 +183,12 @@
     </section>
     <script src="./data.js"></script>
     <script src="./script.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
-       
+      AOS.init({
+        offset: 300,
+        duration: 400
+      });
     </script>
 </body>
 </html>

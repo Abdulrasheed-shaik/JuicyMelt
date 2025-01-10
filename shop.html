@@ -72,6 +72,8 @@
       margin: 10px auto;
     }
     .body {
+      width: 100%;
+      height: 100%;
       display: flex;
       gap: 1%;
     }
@@ -236,9 +238,113 @@
       margin-left: 0; /* Adjust margin as needed */
       width: 100%;
     }
-    .category-buttons button {
-      flex: 1; /* Make buttons take equal space */
+    /* .category-buttons button {
+      flex: 1;
+    } */
+    @media screen and (max-width: 480px){
+      img {
+      width: 200px;
+      height: 200px;
+      aspect-ratio: 1/1;
     }
+      .body{
+        height: 100vh !important;
+        flex-direction: column;
+        
+      }
+      .card{
+      width: 300px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    
+    }
+    .data{
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 10px ;
+    }
+      .data h1{
+        font-size: 15px;
+      }
+      .data p{
+        font-size: 15px !important;
+      }
+      .hover-content p{
+        font-size: 15px;
+      }
+      .hover-content button{
+        padding: 10px 15px;
+        font-size: 12px;
+      }
+      .buttons {
+        width: 90%;
+        padding: 20px;
+        margin-left: 20px;
+      }
+      .buttonFilters{
+        margin-left: 0;
+      }
+      .buttonFilters button, .category-buttons button, .type-container button {
+        padding: 5px 10px;
+        font-weight: 600;
+        font-size: 10px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+      }
+      .category-buttons {
+        margin-left: 0;
+      }
+      .pagination {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        background-color: white;
+        padding: 10px 0;
+      }
+      .pagination button {
+        width: 30px;
+        height: 30px;
+        padding: 5px 5px;
+        margin-bottom: 10px;
+      }
+      .sort-select {
+        padding: 5px;
+        font-size: 12px;
+      }
+      .price-filter {
+        padding: 5px;
+        font-size: 12px;
+      }
+      .nav{
+        width: 100%;
+        gap: 20%;
+      }
+      ul{
+        gap: 20px;
+      }
+      ul li{
+        font-size: 20px;
+        margin-top: 20px;
+      }
+      #cart-count {
+        width: 15px;
+        height: 15px;
+        font-size: 10px;
+        top: -30px;
+        right: -10px;
+      }
+      .h1{
+        font-size: 20px;
+      }
+      .filters{
+        padding: 10px 50px;
+      }
+    } 
   </style>  
 </head>
 <body>
@@ -279,7 +385,7 @@
       </select>
     </div>
     </div>
-    <div>
+    <div class="buttons">
       <div class="buttonFilters">
       <!-- Sorting Select -->
       </div>
